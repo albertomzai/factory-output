@@ -1,134 +1,416 @@
-```json
 {
-  "tasks": [
-    {
-      "id": "TASK-01",
-      "title": "Define Core Entities and Domain Model",
-      "description": "Establish the fundamental data structures (Entities/Aggregates) for Tenants, Landlords, Profiles, and Matching Algorithms.",
-      "inputs": ["Canvas.pdf", "RAG Fragments"],
-      "outputs": ["Domain Model Definition"],
-      "estimation_hours": 2.0,
-      "priority": "P0",
-      "nfrs": [
-        {"requirement": "Data integrity enforced via database constraints.", "category": "Security"},
-        {"requirement": "All entity relationships are bidirectional where applicable.", "category": "Consistency"}
-      ]
-    },
-    {
-      "id": "TASK-02",
-      "title": "Implement User Profile Creation (Tenant & Landlord)",
-      "description": "Build the system to allow tenants and landlords to create detailed, verified profiles tailored to specific needs.",
-      "inputs": ["Domain Model Definition"],
-      "outputs": ["User Profiles (Active/Verified)"],
-      "estimation_hours": 3.0,
-      "priority": "P0",
-      "nfrs": [
-        {"requirement": "Profiles are validated against identity verification standards.", "category": "Security"},
-        {"requirement": "Profile content is sanitized to prevent privacy leaks.", "category": "Privacy"}
-      ]
-    },
-    {
-      id": "TASK-03",
-      "title": "Implement AI Matching Engine (Tenant-First)",
-      "description": "Develop the core matching logic that prioritizes tenant experience and vetted profiles over passive property discovery.",
-      "inputs": ["Domain Model Definition"],
-      "outputs": ["Matched Pairs (Tenants/Landlords)"],
-      "estimation_hours": 4.0,
-      "priority": "P0",
-      "nfrs": [
-        {"requirement": "Matching algorithm is auditable for bias.", "category": "Fairness"},
-        {"requirement": "Match quality correlates with user retention.", "category": "Performance"}
-      ]
-    },
-    {
-      id": "TASK-04",
-      "title": "Implement Verification & Moderation Pipeline",
-      "description": "Create the workflow for identity verification and content moderation to ensure safety and trust.",
-      "inputs": ["Domain Model Definition"],
-      "outputs": ["Verified Profiles (Active/Rejected)"],
-      "estimation_hours": 3.0,
-      "priority": "P0",
-      "nfrs": [
-        {"requirement": "All profiles undergo identity verification.", "category": "Security"},
-        {"requirement": "Content is flagged for review before publication.", "category": "Privacy"}
-      ]
-    },
-    {
-      id": "TASK-05",
-      "title": "Implement Payment Gateway & Subscription Tiers",
-      "description": "Configure the financial infrastructure to support freemium-to-paid tiers and university partnerships.",
-      "inputs": ["Domain Model Definition"],
-      "outputs": ["Payment Processing Status"],
-      "estimation_hours": 2.0,
-      "priority": "P1",
-      "nfrs": [
-        {"requirement": "All transactions are logged for audit trails.", "category": "Security"},
-        {"requirement": "Subscription tiers are clearly defined and documented.", "category": "Privacy"}
-      ]
-    },
-    {
-      id": "TASK-06",
-      "title": "Implement Ad Lifecycle Management (30/60/90 Days)",
-      "description": "Configure the system to enforce strict time-limited ads and reduce market noise.",
-      "inputs": ["Domain Model Definition"],
-      "outputs": ["Ad Expiry Status"],
-      "estimation_hours": 2.0,
-      "priority": "P1",
-      "nfrs": [
-        {"requirement": "Ads are automatically expired after the specified duration.", "category": "Security"},
-        {"requirement": 'Ads are removed from search results upon expiry.', "category": "Privacy"}
-      ]
-    },
-    {
-      id": "TASK-07",
-      "title": "Implement User Acquisition & B2B Outreach",
-      "description": "Set up the infrastructure for university partnerships and targeted marketing.",
-      "inputs": ["Domain Model Definition"],
-      "outputs": ["User Base Growth"],
-      "estimation_hours": 3.0,
-      "priority": "P1",
-      "nfrs": [
-        {"requirement": "All outreach campaigns are tracked for ROI.", "category": "Performance"},
-        {"requirement": 'Partnership agreements are signed and stored.', "category": "Privacy"}
-      ]
-    },
-    {
-      id": "TASK-08",
-      "title": "Implement Dashboard & Analytics",
-      "description": "Build the user interface for monitoring key metrics (User Acquisition, Revenue, Market Noise Reduction).",
-      "inputs": ["Domain Model Definition"],
-      "outputs": ["Real-time Dashboards"],
-      "estimation_hours": 2.0,
-      "priority": "P1",
-      "nfrs": [
-        {"requirement": 'Dashboards are updated in real-time.', "category": "Performance"},
-        {"requirement": 'All metrics are derived from the RAG data sources.', "category": "Privacy"}
-      ]
+  "project_plan": {
+    "tasks": [
+      {
+        "id": "TASK-UM-001",
+        "title": "Implement EmailAddress Value Object",
+        "description": "Create EmailAddress value object with validation and normalization methods",
+        "effort_estimate": "2h",
+        "priority": "P0",
+        "complexity": "Low",
+        "gherkin_scenarios": ["Successful tenant registration", "Successful property owner registration", "Registration with duplicate email", "Registration with invalid email format", "Registration with weak password"],
+        "dependencies": [],
+        "non_functional_requirements": ["Input validation", "Error handling"]
+      },
+      {
+        "id": "TASK-UM-002",
+        "title": "Implement Password Value Object",
+        "description": "Create Password value object with hashing and validation methods",
+        "effort_estimate": "3h",
+        "priority": "P0",
+        "complexity": "Low",
+        "gherkin_scenarios": ["Successful tenant registration", "Successful property owner registration", "Registration with weak password", "Successful user login", "Login with incorrect password", "Login with non-existent account", "Password reset request"],
+        "dependencies": [],
+        "non_functional_requirements": ["Security", "Input validation"]
+      },
+      {
+        "id": "TASK-UM-003",
+        "title": "Implement User Entity",
+        "description": "Create User entity with attributes and invariants",
+        "effort_estimate": "3h",
+        "priority": "P0",
+        "complexity": "Medium",
+        "gherkin_scenarios": ["Successful tenant registration", "Successful property owner registration", "Registration with duplicate email", "Registration with invalid email format", "Registration with weak password", "Successful user login", "Login with incorrect password", "Login with non-existent account", "Password reset request", "Account deletion"],
+        "dependencies": ["TASK-UM-001", "TASK-UM-002"],
+        "non_functional_requirements": ["Data integrity", "Error handling"]
+      },
+      {
+        "id": "TASK-UM-004",
+        "title": "Implement Account Entity",
+        "description": "Create Account entity with status management methods",
+        "effort_estimate": "2h",
+        "priority": "P0",
+        "complexity": "Low",
+        "gherkin_scenarios": ["Successful user login", "Account deletion"],
+        "dependencies": ["TASK-UM-003"],
+        "non_functional_requirements": ["Data integrity", "Error handling"]
+      },
+      {
+        "id": "TASK-UM-005",
+        "title": "Implement User Registration Endpoint",
+        "description": "Create API endpoint for user registration with validation",
+        "effort_estimate": "4h",
+        "priority": "P1",
+        "complexity": "Medium",
+        "gherkin_scenarios": ["Successful tenant registration", "Successful property owner registration", "Registration with duplicate email", "Registration with invalid email format", "Registration with weak password"],
+        "dependencies": ["TASK-UM-003", "TASK-UM-004"],
+        "non_functional_requirements": ["Input validation", "Error handling", "Security", "Logging"]
+      },
+      {
+        "id": "TASK-UM-006",
+        "title": "Implement User Authentication Endpoint",
+        "description": "Create API endpoint for user authentication with credential validation",
+        "effort_estimate": "4h",
+        "priority": "P1",
+        "complexity": "Medium",
+        "gherkin_scenarios": ["Successful user login", "Login with incorrect password", "Login with non-existent account"],
+        "dependencies": ["TASK-UM-002", "TASK-UM-004"],
+        "non_functional_requirements": ["Input validation", "Error handling", "Security", "Logging"]
+      },
+      {
+        "id": "TASK-UM-007",
+        "title": "Implement Password Reset Functionality",
+        "description": "Create password reset token generation and validation logic",
+        "effort_estimate": "3h",
+        "priority": "P2",
+        "complexity": "Medium",
+        "gherkin_scenarios": ["Password reset request"],
+        "dependencies": ["TASK-UM-003", "TASK-UM-004"],
+        "non_functional_requirements": ["Security", "Error handling", "Logging"]
+      },
+      {
+        "id": "TASK-UM-008",
+        "title": "Implement Password Reset Endpoint",
+        "description": "Create API endpoint for password reset request processing",
+        "effort_estimate": "3h",
+        "priority": "P2",
+        "complexity": "Medium",
+        "gherkin_scenarios": ["Password reset request"],
+        "dependencies": ["TASK-UM-007"],
+        "non_functional_requirements": ["Input validation", "Error handling", "Security", "Logging"]
+      },
+      {
+        "id": "TASK-UM-009",
+        "title": "Implement Account Deletion Endpoint",
+        "description": "Create API endpoint for account deletion with confirmation",
+        "effort_estimate": "3h",
+        "priority": "P2",
+        "complexity": "Medium",
+        "gherkin_scenarios": ["Account deletion"],
+        "dependencies": ["TASK-UM-003", "TASK-UM-004"],
+        "non_functional_requirements": ["Input validation", "Error handling", "Security", "Logging"]
+      },
+      {
+        "id": "TASK-TP-001",
+        "title": "Implement PersonalInformation Entity",
+        "description": "Create PersonalInformation entity with tenant's personal details",
+        "effort_estimate": "2h",
+        "priority": "P1",
+        "complexity": "Low",
+        "gherkin_scenarios": ["Create tenant profile"],
+        "dependencies": [],
+        "non_functional_requirements": ["Data integrity", "Input validation"]
+      },
+      {
+        "id": "TASK-TP-002",
+        "title": "Implement VerificationStatus Value Object",
+        "description": "Create VerificationStatus value object with status management",
+        "effort_estimate": "2h",
+        "priority": "P1",
+        "complexity": "Low",
+        "gherkin_scenarios": ["Create tenant profile"],
+        "dependencies": [],
+        "non_functional_requirements": ["Data integrity", "Error handling"]
+      },
+      {
+        "id": "TASK-TP-003",
+        "title": "Implement VerificationDocument Entity",
+        "description": "Create VerificationDocument entity for document management",
+        "effort_estimate": "3h",
+        "priority": "P1",
+        "complexity": "Medium",
+        "gherkin_scenarios": ["Create tenant profile"],
+        "dependencies": ["TASK-TP-002"],
+        "non_functional_requirements": ["Data integrity", "Error handling", "Security"]
+      },
+      {
+        "id": "TASK-TP-004",
+        "title": "Implement TenantProfile Aggregate",
+        "description": "Create TenantProfile aggregate root with required invariants",
+        "effort_estimate": "3h",
+        "priority": "P1",
+        "complexity": "Medium",
+        "gherkin_scenarios": ["Create tenant profile"],
+        "dependencies": ["TASK-TP-001", "TASK-TP-002", "TASK-TP-003", "TASK-UM-003"],
+        "non_functional_requirements": ["Data integrity", "Error handling"]
+      },
+      {
+        "id": "TASK-TP-005",
+        "title": "Implement Tenant Profile Creation Endpoint",
+        "description": "Create API endpoint for tenant profile creation",
+        "effort_estimate": "4h",
+        "priority": "P1",
+        "complexity": "Medium",
+        "gherkin_scenarios": ["Create tenant profile"],
+        "dependencies": ["TASK-TP-004"],
+        "non_functional_requirements": ["Input validation", "Error handling", "Security", "Logging"]
+      },
+      {
+        "id": "TASK-PC-001",
+        "title": "Implement PropertyAddress Value Object",
+        "description": "Create PropertyAddress value object with validation and formatting",
+        "effort_estimate": "2h",
+        "priority": "P1",
+        "complexity": "Low",
+        "gherkin_scenarios": ["Property management scenarios"],
+        "dependencies": [],
+        "non_functional_requirements": ["Input validation", "Error handling"]
+      },
+      {
+        "id": "TASK-PC-002",
+        "title": "Implement PropertyFeatures Entity",
+        "description": "Create PropertyFeatures entity for managing property attributes",
+        "effort_estimate": "2h",
+        "priority": "P1",
+        "complexity": "Low",
+        "gherkin_scenarios": ["Property management scenarios"],
+        "dependencies": [],
+        "non_functional_requirements": ["Data integrity", "Error handling"]
+      },
+      {
+        "id": "TASK-PC-003",
+        "title": "Implement Availability Value Object",
+        "description": "Create Availability value object for managing property availability",
+        "effort_estimate": "2h",
+        "priority": "P1",
+        "complexity": "Low",
+        "gherkin_scenarios": ["Property availability scenarios"],
+        "dependencies": [],
+        "non_functional_requirements": ["Data integrity", "Error handling"]
+      },
+      {
+        "id": "TASK-PC-004",
+        "title": "Implement Property Aggregate",
+        "description": "Create Property aggregate root with required invariants",
+        "effort_estimate": "3h",
+        "priority": "P1",
+        "complexity": "Medium",
+        "gherkin_scenarios": ["Property management scenarios", "Property availability scenarios"],
+        "dependencies": ["TASK-PC-001", "TASK-PC-002", "TASK-PC-003", "TASK-UM-003"],
+        "non_functional_requirements": ["Data integrity", "Error handling"]
+      },
+      {
+        "id": "TASK-PC-005",
+        "title": "Implement Property Management Endpoints",
+        "description": "Create API endpoints for property CRUD operations",
+        "effort_estimate": "4h",
+        "priority": "P1",
+        "complexity": "Medium",
+        "gherkin_scenarios": ["Property management scenarios"],
+        "dependencies": ["TASK-PC-004"],
+        "non_functional_requirements": ["Input validation", "Error handling", "Security", "Logging"]
+      },
+      {
+        "id": "TASK-PC-006",
+        "title": "Implement Property Availability Management Endpoint",
+        "description": "Create API endpoint for updating property availability",
+        "effort_estimate": "3h",
+        "priority": "P2",
+        "complexity": "Medium",
+        "gherkin_scenarios": ["Property availability scenarios"],
+        "dependencies": ["TASK-PC-004"],
+        "non_functional_requirements": ["Input validation", "Error handling", "Security", "Logging"]
+      },
+      {
+        "id": "TASK-MC-001",
+        "title": "Implement MatchingCriteria Entity",
+        "description": "Create MatchingCriteria entity for defining match parameters",
+        "effort_estimate": "3h",
+        "priority": "P2",
+        "complexity": "Medium",
+        "gherkin_scenarios": ["Matching scenarios"],
+        "dependencies": [],
+        "non_functional_requirements": ["Data integrity", "Error handling"]
+      },
+      {
+        "id": "TASK-MC-002",
+        "title": "Implement MatchScore Calculation Logic",
+        "description": "Create algorithm for calculating match scores between tenants and properties",
+        "effort_estimate": "4h",
+        "priority": "P2",
+        "complexity": "High",
+        "gherkin_scenarios": ["Matching scenarios"],
+        "dependencies": ["TASK-MC-001"],
+        "non_functional_requirements": ["Performance", "Error handling", "Logging"]
+      },
+      {
+        "id": "TASK-MC-003",
+        "title": "Implement Match Entity",
+        "description": "Create Match entity for storing match results",
+        "effort_estimate": "2h",
+        "priority": "P2",
+        "complexity": "Low",
+        "gherkin_scenarios": ["Matching scenarios"],
+        "dependencies": ["TASK-MC-001", "TASK-MC-002"],
+        "non_functional_requirements": ["Data integrity", "Error handling"]
+      },
+      {
+        "id": "TASK-MC-004",
+        "title": "Implement AI-Powered Matching Algorithm",
+        "description": "Create core matching algorithm with AI components",
+        "effort_estimate": "4h",
+        "priority": "P2",
+        "complexity": "High",
+        "gherkin_scenarios": ["Matching scenarios"],
+        "dependencies": ["TASK-MC-001", "TASK-MC-002", "TASK-MC-003", "TASK-TP-004", "TASK-PC-004"],
+        "non_functional_requirements": ["Performance", "Scalability", "Error handling", "Logging"]
+      },
+      {
+        "id": "TASK-MC-005",
+        "title": "Implement Matching Endpoints",
+        "description": "Create API endpoints for tenant-property matching",
+        "effort_estimate": "4h",
+        "priority": "P2",
+        "complexity": "Medium",
+        "gherkin_scenarios": ["Matching scenarios"],
+        "dependencies": ["TASK-MC-004"],
+        "non_functional_requirements": ["Input validation", "Error handling", "Security", "Logging", "Performance"]
+      },
+      {
+        "id": "TASK-RA-001",
+        "title": "Implement LeaseTerm Value Object",
+        "description": "Create LeaseTerm value object for managing lease dates and conditions",
+        "effort_estimate": "2h",
+        "priority": "P2",
+        "complexity": "Low",
+        "gherkin_scenarios": ["Rental agreement scenarios"],
+        "dependencies": [],
+        "non_functional_requirements": ["Input validation", "Error handling"]
+      },
+      {
+        "id": "TASK-RA-002",
+        "title": "Implement ContractStatus Management",
+        "description": "Create ContractStatus entity for managing agreement states",
+        "effort_estimate": "2h",
+        "priority": "P2",
+        "complexity": "Low",
+        "gherkin_scenarios": ["Rental agreement scenarios"],
+        "dependencies": [],
+        "non_functional_requirements": ["Data integrity", "Error handling"]
+      },
+      {
+        "id": "TASK-RA-003",
+        "title": "Implement RentalAgreement Aggregate",
+        "description": "Create RentalAgreement aggregate root with required invariants",
+        "effort_estimate": "3h",
+        "priority": "P2",
+        "complexity": "Medium",
+        "gherkin_scenarios": ["Rental agreement scenarios"],
+        "dependencies": ["TASK-RA-001", "TASK-RA-002", "TASK-TP-004", "TASK-PC-004"],
+        "non_functional_requirements": ["Data integrity", "Error handling"]
+      },
+      {
+        "id": "TASK-RA-004",
+        "title": "Implement Rental Agreement Endpoints",
+        "description": "Create API endpoints for rental agreement management",
+        "effort_estimate": "4h",
+        "priority": "P2",
+        "complexity": "Medium",
+        "gherkin_scenarios": ["Rental agreement scenarios"],
+        "dependencies": ["TASK-RA-003"],
+        "non_functional_requirements": ["Input validation", "Error handling", "Security", "Logging"]
+      },
+      {
+        "id": "TASK-PC-007",
+        "title": "Implement PaymentMethod Value Object",
+        "description": "Create PaymentMethod value object for managing payment types",
+        "effort_estimate": "2h",
+        "priority": "P3",
+        "complexity": "Low",
+        "gherkin_scenarios": ["Payment scenarios"],
+        "dependencies": [],
+        "non_functional_requirements": ["Input validation", "Error handling", "Security"]
+      },
+      {
+        "id": "TASK-PC-008",
+        "title": "Implement Transaction Entity",
+        "description": "Create Transaction entity for tracking payment transactions",
+        "effort_estimate": "3h",
+        "priority": "P3",
+        "complexity": "Medium",
+        "gherkin_scenarios": ["Payment scenarios"],
+        "dependencies": ["TASK-PC-007"],
+        "non_functional_requirements": ["Data integrity", "Error handling", "Security", "Logging"]
+      },
+      {
+        "id": "TASK-PC-009",
+        "title": "Implement Payment Entity",
+        "description": "Create Payment entity for managing payment details",
+        "effort_estimate": "3h",
+        "priority": "P3",
+        "complexity": "Medium",
+        "gherkin_scenarios": ["Payment scenarios"],
+        "dependencies": ["TASK-PC-007", "TASK-PC-008", "TASK-RA-003"],
+        "non_functional_requirements": ["Data integrity", "Error handling", "Security"]
+      },
+      {
+        "id": "TASK-PC-010",
+        "title": "Implement Payment Processing Endpoints",
+        "description": "Create API endpoints for payment processing",
+        "effort_estimate": "4h",
+        "priority": "P3",
+        "complexity": "High",
+        "gherkin_scenarios": ["Payment scenarios"],
+        "dependencies": ["TASK-PC-009"],
+        "non_functional_requirements": ["Input validation", "Error handling", "Security", "Logging", "Transaction management"]
+      },
+      {
+        "id": "TASK-PC-011",
+        "title": "Implement Transaction History Endpoint",
+        "description": "Create API endpoint for retrieving transaction history",
+        "effort_estimate": "3h",
+        "priority": "P3",
+        "complexity": "Medium",
+        "gherkin_scenarios": ["Payment scenarios"],
+        "dependencies": ["TASK-PC-008", "TASK-PC-009"],
+        "non_functional_requirements": ["Input validation", "Error handling", "Security", "Logging"]
+      }
+    ],
+    "dependency_graph": {
+      "TASK-UM-001": [],
+      "TASK-UM-002": [],
+      "TASK-UM-003": ["TASK-UM-001", "TASK-UM-002"],
+      "TASK-UM-004": ["TASK-UM-003"],
+      "TASK-UM-005": ["TASK-UM-003", "TASK-UM-004"],
+      "TASK-UM-006": ["TASK-UM-002", "TASK-UM-004"],
+      "TASK-UM-007": ["TASK-UM-003", "TASK-UM-004"],
+      "TASK-UM-008": ["TASK-UM-007"],
+      "TASK-UM-009": ["TASK-UM-003", "TASK-UM-004"],
+      "TASK-TP-001": [],
+      "TASK-TP-002": [],
+      "TASK-TP-003": ["TASK-TP-002"],
+      "TASK-TP-004": ["TASK-TP-001", "TASK-TP-002", "TASK-TP-003", "TASK-UM-003"],
+      "TASK-TP-005": ["TASK-TP-004"],
+      "TASK-PC-001": [],
+      "TASK-PC-002": [],
+      "TASK-PC-003": [],
+      "TASK-PC-004": ["TASK-PC-001", "TASK-PC-002", "TASK-PC-003", "TASK-UM-003"],
+      "TASK-PC-005": ["TASK-PC-004"],
+      "TASK-PC-006": ["TASK-PC-004"],
+      "TASK-MC-001": [],
+      "TASK-MC-002": ["TASK-MC-001"],
+      "TASK-MC-003": ["TASK-MC-001", "TASK-MC-002"],
+      "TASK-MC-004": ["TASK-MC-001", "TASK-MC-002", "TASK-MC-003", "TASK-TP-004", "TASK-PC-004"],
+      "TASK-MC-005": ["TASK-MC-004"],
+      "TASK-RA-001": [],
+      "TASK-RA-002": [],
+      "TASK-RA-003": ["TASK-RA-001", "TASK-RA-002", "TASK-TP-004", "TASK-PC-004"],
+      "TASK-RA-004": ["TASK-RA-003"],
+      "TASK-PC-007": [],
+      "TASK-PC-008": ["TASK-PC-007"],
+      "TASK-PC-009": ["TASK-PC-007", "TASK-PC-008", "TASK-RA-003"],
+      "TASK-PC-010": ["TASK-PC-009"],
+      "TASK-PC-011": ["TASK-PC-008", "TASK-PC-009"]
     }
-  ],
-  "traceability_matrix": {
-    "TASK-01 -> TASK-02": ["Profile Creation", "Identity Verification"],
-    "TASK-01 -> TASK-03": ["Matching Logic", "User Segmentation"],
-    "TASK-04 -> TASK-05": ["Verification Pipeline", "Payment Gateway Integration"],
-    "TASK-06 -> TASK-07": ["Ad Lifecycle", "B2B Outreach"]
-  },
-  "dependencies": {
-    "TASK-01: depends on [Domain Model Definition]",
-    "TASK-02: depends on [Domain Model Definition]",
-    "TASK-03: depends on [Domain Model Definition]",
-    "TASK-04: depends on [Domain Model Definition]",
-    "TASK-05: depends on [Domain Model Definition]",
-    "TASK-06: depends on [Domain Model Definition]",
-    "TASK-07: depends on [Domain Model Definition]"
-  },
-  "priorities": {
-    "P0": ["TASK-01", "TASK-02", "TASK-03"],
-    "P1": ["TASK-04", "TASK-05", "TASK-06"]
-  },
-  "nfrs": [
-    {"requirement": "All data is encrypted at rest and in transit.", "category": "Security"},
-    {"requirement": "System logs are retained for compliance purposes.", "category": "Compliance"},
-    {"requirement": 'Performance targets: <200ms response time.', "category": "Performance"}
-  ]
+  }
 }
-```
