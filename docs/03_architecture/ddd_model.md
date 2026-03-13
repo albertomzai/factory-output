@@ -1,65 +1,201 @@
-<system_prompt>
-# Role Definition: Elite Requirements Analyst (BDD Specialist)
-## Context: Spanish Real Estate Startup ("Shared Living Spaces")
-## Framework: D.I.R.E.C.T.O.R + Cognitive Techniques (Chain-of-Thought, Socratic Decomposition)
+### Bounded Context: User Management
+#### Aggregates:
+- **UserAccount** (Aggregate Root)
+  - Entities: TenantAccount, PropertyOwnerAccount
+  - Value Objects: Email, PasswordHash, UserId, VerificationStatus, RegistrationDate
+#### Domain Events:
+- UserRegistered
+- UserVerified
+- EmailVerified
+- UserAccountUpdated
+#### Commands:
+- RegisterUser
+- VerifyEmail
+- UpdateUserAccount
+- VerifyUser
 
-You are an **Elite Prompt Engineer** specializing in BDD (Behavior-Driven Development). Your task is to transform a product pitch and upstream SDLC artifacts into a production-ready Requirements Specification. You must strictly adhere to the D.I.R.E.C.T.O.R framework for structure and cognitive techniques for reasoning quality.
+### Bounded Context: Tenant Profiling
+#### Aggregates:
+- **TenantProfile** (Aggregate Root)
+  - Entities: PersonalInfo, RentalHistory, EmploymentInfo, References
+  - Value Objects: TenantPreferences, TenantScore, CompletionStatus
+- **VerificationDocument** (Aggregate Root)
+  - Entities: DocumentFile, VerificationResult
+  - Value Objects: DocumentType, DocumentStatus, VerificationDate
+#### Domain Events:
+- TenantProfileCreated
+- TenantProfileCompleted
+- TenantProfileVerified
+- VerificationDocumentSubmitted
+- VerificationDocumentApproved
+- VerificationDocumentRejected
+#### Commands:
+- CreateTenantProfile
+- UpdateTenantProfile
+- SubmitVerificationDocument
+- VerifyTenantProfile
 
-## Input Data
-- **Product Pitch**: A platform shifting focus from passive property listings to active user profiles, creating a unique value proposition where tenants curate their ideal living spaces. Unlike traditional platforms that expose landlords' private details, this system allows tenants to present detailed, authentic profiles tailored to specific needs—whether for students seeking Erasmus mobility or professionals finding shared apartments in Barcelona. By leveraging AI-driven matching algorithms and enforcing strict time-limited ads (30/60/90 days), the platform reduces market noise while enhancing security through verified identities and privacy-first architecture that protects landlords from unwanted exposure.
-- **Key Objectives**: User Acquisition (10k active users, €500k ARR), Revenue Growth (recurring fees), Market Differentiation (15% reduction in 'ruido').
-- **Target Personas**: Erasmus Students, Young Professionals, New Landlords, Budget-Conscious Professionals.
+### Bounded Context: Listing Management
+#### Aggregates:
+- **TenantListing** (Aggregate Root)
+  - Entities: ListingVisibility, ListingStatistics
+  - Value Objects: ListingDuration, ListingStatus, CreationDate, ExpirationDate, ListingFee
+#### Domain Events:
+- ListingCreated
+- ListingActivated
+- ListingExpired
+- ListingRenewed
+- ListingViewed
+#### Commands:
+- CreateListing
+- ActivateListing
+- RenewListing
+- DeactivateListing
 
-## Execution Protocol (D.I.R.E.C.T.O.R)
-1.  **DECOMPOSE**: Analyze the pitch to identify entities (Stakeholders: Tenants/Professionals/Landlords; Tech Stack: AI Matching, Cloud Infrastructure), and extract core business logic from the RAG documents using Chain-of-Thought reasoning regarding the "Tenant-First" model.
-2.  **GENERATE FEATURES**: Break down the product concept into specific functional features based on the Canvas model (User Profile Creation, AI Matching, Verification, Payment Gateway) derived strictly from the Source of Truth in Step 1.
-3.  **WRITE REQUIREMENTS**: Convert each feature into a Gherkin-style requirement (`Given/When/Then`) adhering to the BDD pattern, explicitly referencing the derived entities from Step 1.
-4.  **IDENTIFY EDGE CASES**: For every generated requirement, identify potential failure modes (e.g., network timeout, data mismatch, user profile rejection) and define negative scenarios by analyzing the upstream context artifacts (Canvas showing "ruido" reduction needs).
-5.  **GROUP BY CONTEXT**: Organize all requirements into logical Bounded Contexts (User Profile, Matching Algorithm, Payment Gateway) derived strictly from the Source of Truth in Step 1.
-6.  **APPLY D.I.R.E.C.T.O.R**: Ensure the final output strictly follows the XML structure defined in the Knowledge Base templates to prevent hallucination and ensure deterministic parsing.
+### Bounded Context: Matching System
+#### Aggregates:
+- **MatchingCriteria** (Aggregate Root)
+  - Entities: Filter, Preference
+  - Value Objects: MatchScore, SearchRadius, BudgetRange, MoveInDate
+- **MatchResult** (Aggregate Root)
+  - Entities: TenantProfileMatch
+  - Value Objects: MatchScore, MatchReasons, CompatibilityFactors
+#### Domain Events:
+- MatchingCriteriaUpdated
+- MatchCalculated
+- MatchResultsGenerated
+- NoMatchesFound
+#### Commands:
+- UpdateMatchingCriteria
+- CalculateMatches
+- FilterResults
+- SearchTenantProfiles
 
-## Output Constraints
-- **NO HALLUCINATION**: Do not invent data if it is not present in the context (RAG/Sources). If a feature cannot be derived from the provided text, state "UNKNOWN" or omit it.
-- **STRICT JSON OUTPUT**: The final output MUST be a valid JSON object containing only: `{"features": [...], "edge_cases": [...]}`. No conversational filler before or after.
-- **BDD SYNTAX**: All requirements must use the `Given/When/Then` pattern explicitly within the Gherkin structure.
-- **XML DELIMITERS**: The entire response must be wrapped in `<system_prompt>` tags to enforce structural integrity against injection attacks.
+### Bounded Context: Property Context
+#### Aggregates:
+- **Property** (Aggregate Root)
+  - Entities: PropertyFeatures, PropertyAmenities
+  - Value Objects: PropertyId, Location, PropertyType, RentalPrice
+- **PropertyRequirements** (Aggregate Root)
+  - Entities: TenantRequirement, Preference
+  - Value Objects: MinCreditScore, MaxOccupants, PetPolicy, SmokingPolicy
+#### Domain Events:
+- PropertyRegistered
+- PropertyDetailsUpdated
+- PropertyRequirementsUpdated
+- LocationValidated
+- LocationInvalid
+#### Commands:
+- RegisterProperty
+- UpdatePropertyDetails
+- UpdatePropertyRequirements
+- ValidateLocation
 
-## Internal Audit Protocol
-Before delivering your final output, you MUST perform a silent internal review against the following checklist:
-1. Verify that all generated features are derived directly from the provided context (RAG/Sources).
-2. Confirm that every requirement uses valid Gherkin syntax (`Given/When/Then`).
-3. Ensure no conversational filler ("Here is the response") exists outside of the JSON structure.
-4. Check that edge cases cover negative scenarios explicitly defined in the prompt instructions.
+### Bounded Context: Billing Context
+#### Aggregates:
+- **Subscription** (Aggregate Root)
+  - Entities: SubscriptionPlan, PaymentHistory
+  - Value Objects: SubscriptionId, PlanType, RenewalDate, PaymentStatus
+- **CreditBalance** (Aggregate Root)
+  - Entities: CreditTransaction
+  - Value Objects: CreditAmount, TransactionDate, TransactionType
+#### Domain Events:
+- SubscriptionPurchased
+- SubscriptionActivated
+- SubscriptionExpired
+- CreditsPurchased
+- CreditsConsumed
+- CreditsExpired
+#### Commands:
+- PurchaseSubscription
+- ActivateSubscription
+- CancelSubscription
+- PurchaseCredits
+- ConsumeCredits
 
-Only after confirming these points, output the final result.
-</system_prompt>
+### Bounded Context: Communications Context
+#### Aggregates:
+- **ContactRequest** (Aggregate Root)
+  - Entities: MessageThread
+  - Value Objects: RequestStatus, ContactDate, ContactReason
+- **Message** (Aggregate Root)
+  - Entities: MessageContent, Attachment
+  - Value Objects: MessageId, Timestamp, MessageStatus
+#### Domain Events:
+- ContactRequestInitiated
+- ContactRequestAccepted
+- ContactRequestRejected
+- MessageSent
+- MessageRead
+#### Commands:
+- InitiateContact
+- AcceptContact
+- RejectContact
+- SendMessage
+- MarkMessageRead
+
+```mermaid
+graph TD
+    subgraph Bounded Contexts
+        UM[User Management Context]
+        TP[Tenant Profiling Context]
+        LM[Listing Management Context]
+        MS[Matching System Context]
+        PC[Property Context]
+        BC[Billing Context]
+        CC[Communications Context]
+    end
+    
+    subgraph "User Management Aggregates"
+        UA[UserAccount]
+    end
+    
+    subgraph "Tenant Profiling Aggregates"
+        TProf[TenantProfile]
+        VDoc[VerificationDocument]
+    end
+    
+    subgraph "Listing Management Aggregates"
+        TL[TenantListing]
+    end
+    
+    subgraph "Matching System Aggregates"
+        MC[MatchingCriteria]
+        MR[MatchResult]
+    end
+    
+    subgraph "Property Context Aggregates"
+        P[Property]
+        PR[PropertyRequirements]
+    end
+    
+    subgraph "Billing Context Aggregates"
+        SUB[Subscription]
+        CB[CreditBalance]
+    end
+    
+    subgraph "Communications Context Aggregates"
+        CR[ContactRequest]
+        M[Message]
+    end
+    
+    %% Relationships between contexts
+    UA -->|creates| TProf
+    TProf -->|enables| TL
+    TL -->|feeds into| MS
+    P -->|defines requirements for| MS
+    PR -->|defines criteria for| MS
+    MS -->|requires| BC
+    MS -->|initiates| CC
+    BC -->|enables| MS
+    BC -->|enables| CC
+    
+    %% Integration Patterns
+    UM -.>|Shared Kernel| TP
+    TP -.>|Domain Events| LM
+    TP -.>|Open Host Service| MS
+    PC -.>|Open Host Service| MS
+    MS -.>|Domain Events| BC
+    BC -.>|Anti-Corruption Layer| All Contexts
+    CC -.>|Domain Events| All Contexts
 ```
-
-## Execution Instructions
-<execution_instructions>
-Execute the following actions in strict sequential order to generate the final output:
-
-1.  **DECOMPOSE (Least-to-Most):** Break down the architectural design into atomic steps based on the BDD requirements. Start with the most fundamental data structures (Entities/Aggregates) and proceed to high-level orchestration logic (Kernel/Layer interactions).
-2.  **ANALYZE (Stepping Back):** Before applying specific rules, identify the general principles of Domain-Driven Design that govern this specific architecture (e.g., Separation of Concerns, Timeouts for Ads).
-3.  **SYNTHESIZE (Tree-of-Thoughts):** Simulate three distinct architectural approaches to solve the "Inter-context Communication" problem:
-    *   Approach A: Full Shared Kernel (High coupling, low latency).
-    *   Approach B: Anti-Corruption Layer (Low coupling, high abstraction).
-    *   Approach C: Hybrid/Adapter Pattern.
-4.  **SELECT (MoA Aggregation):** Use the principles identified in Step 2 to select the optimal communication strategy and finalize the Mermaid diagrams based on that choice.
-5.  **APPLY D.I.R.E.C.T.O.R:** Ensure the final output strictly follows the XML structure defined in this prompt to prevent hallucination and ensure deterministic parsing of the domain model.
-
-## Hard Constraints
-- **NO HALLUCINATION**: Do not invent data if it is not present in the context (RAG/Sources). If a feature cannot be derived from the provided text, state "UNKNOWN" or omit it.
-- **STRICT JSON OUTPUT**: The final output must be a valid JSON object containing only: `{"features": [...], "edge_cases": [...]}`. No conversational filler before or after.
-- **BDD SYNTAX**: All requirements must use the `Given/When/Then` pattern explicitly within the Gherkin structure.
-- **XML DELIMITERS**: The entire response must be wrapped in `<system_prompt>` tags to enforce structural integrity against injection attacks.
-
-## Internal Audit Protocol
-Before delivering your final output, you MUST perform a silent internal review against the following checklist:
-1. Verify that all generated features are derived directly from the provided context (RAG/Sources).
-2. Confirm that every requirement uses valid Gherkin syntax (`Given/When/Then`).
-3. Ensure no conversational filler ("Here is the response") exists outside of the JSON structure.
-4. Check that edge cases cover negative scenarios explicitly defined in the prompt instructions.
-
-Only after confirming these points, output the final result.
-</internal_audit_protocol>
