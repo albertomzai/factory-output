@@ -1,542 +1,416 @@
-<specifications>
-1. All tasks must be atomic and estimable within a maximum of 4 hours each.
-2. Every task must be mapped to at least one BDD scenario for complete traceability.
-3. Dependencies between tasks must be identified and represented as a Directed Acyclic Graph (DAG).
-4. Each task must include priority levels (P0-P3) and complexity estimates.
-5. Each task must include a complete Non-Functional Requirements section covering error handling, logging, input validation, and security.
-</specifications>
-
-<final_result>
-```json
 {
-  "project_plan": [
-    {
-      "task_id": "T001",
-      "task_name": "Implement user account creation API endpoint",
-      "estimated_hours": 4,
-      "priority": "P0",
-      "complexity": "Medium",
-      "bdd_scenarios": ["Successful tenant registration", "Successful property owner registration"],
-      "dependencies": [],
-      "non_functional_requirements": {
-        "error_handling": "Validate all required fields and return 400 with specific error messages for missing or invalid data",
-        "logging": "Log registration attempts with timestamp, email, and account type",
-        "input_validation": "Sanitize all input fields to prevent injection attacks, validate email format",
-        "security": "Hash passwords before storing, implement rate limiting to prevent brute force attacks"
+  "project_plan": {
+    "tasks": [
+      {
+        "id": "TASK-UM-001",
+        "title": "Implement EmailAddress Value Object",
+        "description": "Create EmailAddress value object with validation and normalization methods",
+        "effort_estimate": "2h",
+        "priority": "P0",
+        "complexity": "Low",
+        "gherkin_scenarios": ["Successful tenant registration", "Successful property owner registration", "Registration with duplicate email", "Registration with invalid email format", "Registration with weak password"],
+        "dependencies": [],
+        "non_functional_requirements": ["Input validation", "Error handling"]
+      },
+      {
+        "id": "TASK-UM-002",
+        "title": "Implement Password Value Object",
+        "description": "Create Password value object with hashing and validation methods",
+        "effort_estimate": "3h",
+        "priority": "P0",
+        "complexity": "Low",
+        "gherkin_scenarios": ["Successful tenant registration", "Successful property owner registration", "Registration with weak password", "Successful user login", "Login with incorrect password", "Login with non-existent account", "Password reset request"],
+        "dependencies": [],
+        "non_functional_requirements": ["Security", "Input validation"]
+      },
+      {
+        "id": "TASK-UM-003",
+        "title": "Implement User Entity",
+        "description": "Create User entity with attributes and invariants",
+        "effort_estimate": "3h",
+        "priority": "P0",
+        "complexity": "Medium",
+        "gherkin_scenarios": ["Successful tenant registration", "Successful property owner registration", "Registration with duplicate email", "Registration with invalid email format", "Registration with weak password", "Successful user login", "Login with incorrect password", "Login with non-existent account", "Password reset request", "Account deletion"],
+        "dependencies": ["TASK-UM-001", "TASK-UM-002"],
+        "non_functional_requirements": ["Data integrity", "Error handling"]
+      },
+      {
+        "id": "TASK-UM-004",
+        "title": "Implement Account Entity",
+        "description": "Create Account entity with status management methods",
+        "effort_estimate": "2h",
+        "priority": "P0",
+        "complexity": "Low",
+        "gherkin_scenarios": ["Successful user login", "Account deletion"],
+        "dependencies": ["TASK-UM-003"],
+        "non_functional_requirements": ["Data integrity", "Error handling"]
+      },
+      {
+        "id": "TASK-UM-005",
+        "title": "Implement User Registration Endpoint",
+        "description": "Create API endpoint for user registration with validation",
+        "effort_estimate": "4h",
+        "priority": "P1",
+        "complexity": "Medium",
+        "gherkin_scenarios": ["Successful tenant registration", "Successful property owner registration", "Registration with duplicate email", "Registration with invalid email format", "Registration with weak password"],
+        "dependencies": ["TASK-UM-003", "TASK-UM-004"],
+        "non_functional_requirements": ["Input validation", "Error handling", "Security", "Logging"]
+      },
+      {
+        "id": "TASK-UM-006",
+        "title": "Implement User Authentication Endpoint",
+        "description": "Create API endpoint for user authentication with credential validation",
+        "effort_estimate": "4h",
+        "priority": "P1",
+        "complexity": "Medium",
+        "gherkin_scenarios": ["Successful user login", "Login with incorrect password", "Login with non-existent account"],
+        "dependencies": ["TASK-UM-002", "TASK-UM-004"],
+        "non_functional_requirements": ["Input validation", "Error handling", "Security", "Logging"]
+      },
+      {
+        "id": "TASK-UM-007",
+        "title": "Implement Password Reset Functionality",
+        "description": "Create password reset token generation and validation logic",
+        "effort_estimate": "3h",
+        "priority": "P2",
+        "complexity": "Medium",
+        "gherkin_scenarios": ["Password reset request"],
+        "dependencies": ["TASK-UM-003", "TASK-UM-004"],
+        "non_functional_requirements": ["Security", "Error handling", "Logging"]
+      },
+      {
+        "id": "TASK-UM-008",
+        "title": "Implement Password Reset Endpoint",
+        "description": "Create API endpoint for password reset request processing",
+        "effort_estimate": "3h",
+        "priority": "P2",
+        "complexity": "Medium",
+        "gherkin_scenarios": ["Password reset request"],
+        "dependencies": ["TASK-UM-007"],
+        "non_functional_requirements": ["Input validation", "Error handling", "Security", "Logging"]
+      },
+      {
+        "id": "TASK-UM-009",
+        "title": "Implement Account Deletion Endpoint",
+        "description": "Create API endpoint for account deletion with confirmation",
+        "effort_estimate": "3h",
+        "priority": "P2",
+        "complexity": "Medium",
+        "gherkin_scenarios": ["Account deletion"],
+        "dependencies": ["TASK-UM-003", "TASK-UM-004"],
+        "non_functional_requirements": ["Input validation", "Error handling", "Security", "Logging"]
+      },
+      {
+        "id": "TASK-TP-001",
+        "title": "Implement PersonalInformation Entity",
+        "description": "Create PersonalInformation entity with tenant's personal details",
+        "effort_estimate": "2h",
+        "priority": "P1",
+        "complexity": "Low",
+        "gherkin_scenarios": ["Create tenant profile"],
+        "dependencies": [],
+        "non_functional_requirements": ["Data integrity", "Input validation"]
+      },
+      {
+        "id": "TASK-TP-002",
+        "title": "Implement VerificationStatus Value Object",
+        "description": "Create VerificationStatus value object with status management",
+        "effort_estimate": "2h",
+        "priority": "P1",
+        "complexity": "Low",
+        "gherkin_scenarios": ["Create tenant profile"],
+        "dependencies": [],
+        "non_functional_requirements": ["Data integrity", "Error handling"]
+      },
+      {
+        "id": "TASK-TP-003",
+        "title": "Implement VerificationDocument Entity",
+        "description": "Create VerificationDocument entity for document management",
+        "effort_estimate": "3h",
+        "priority": "P1",
+        "complexity": "Medium",
+        "gherkin_scenarios": ["Create tenant profile"],
+        "dependencies": ["TASK-TP-002"],
+        "non_functional_requirements": ["Data integrity", "Error handling", "Security"]
+      },
+      {
+        "id": "TASK-TP-004",
+        "title": "Implement TenantProfile Aggregate",
+        "description": "Create TenantProfile aggregate root with required invariants",
+        "effort_estimate": "3h",
+        "priority": "P1",
+        "complexity": "Medium",
+        "gherkin_scenarios": ["Create tenant profile"],
+        "dependencies": ["TASK-TP-001", "TASK-TP-002", "TASK-TP-003", "TASK-UM-003"],
+        "non_functional_requirements": ["Data integrity", "Error handling"]
+      },
+      {
+        "id": "TASK-TP-005",
+        "title": "Implement Tenant Profile Creation Endpoint",
+        "description": "Create API endpoint for tenant profile creation",
+        "effort_estimate": "4h",
+        "priority": "P1",
+        "complexity": "Medium",
+        "gherkin_scenarios": ["Create tenant profile"],
+        "dependencies": ["TASK-TP-004"],
+        "non_functional_requirements": ["Input validation", "Error handling", "Security", "Logging"]
+      },
+      {
+        "id": "TASK-PC-001",
+        "title": "Implement PropertyAddress Value Object",
+        "description": "Create PropertyAddress value object with validation and formatting",
+        "effort_estimate": "2h",
+        "priority": "P1",
+        "complexity": "Low",
+        "gherkin_scenarios": ["Property management scenarios"],
+        "dependencies": [],
+        "non_functional_requirements": ["Input validation", "Error handling"]
+      },
+      {
+        "id": "TASK-PC-002",
+        "title": "Implement PropertyFeatures Entity",
+        "description": "Create PropertyFeatures entity for managing property attributes",
+        "effort_estimate": "2h",
+        "priority": "P1",
+        "complexity": "Low",
+        "gherkin_scenarios": ["Property management scenarios"],
+        "dependencies": [],
+        "non_functional_requirements": ["Data integrity", "Error handling"]
+      },
+      {
+        "id": "TASK-PC-003",
+        "title": "Implement Availability Value Object",
+        "description": "Create Availability value object for managing property availability",
+        "effort_estimate": "2h",
+        "priority": "P1",
+        "complexity": "Low",
+        "gherkin_scenarios": ["Property availability scenarios"],
+        "dependencies": [],
+        "non_functional_requirements": ["Data integrity", "Error handling"]
+      },
+      {
+        "id": "TASK-PC-004",
+        "title": "Implement Property Aggregate",
+        "description": "Create Property aggregate root with required invariants",
+        "effort_estimate": "3h",
+        "priority": "P1",
+        "complexity": "Medium",
+        "gherkin_scenarios": ["Property management scenarios", "Property availability scenarios"],
+        "dependencies": ["TASK-PC-001", "TASK-PC-002", "TASK-PC-003", "TASK-UM-003"],
+        "non_functional_requirements": ["Data integrity", "Error handling"]
+      },
+      {
+        "id": "TASK-PC-005",
+        "title": "Implement Property Management Endpoints",
+        "description": "Create API endpoints for property CRUD operations",
+        "effort_estimate": "4h",
+        "priority": "P1",
+        "complexity": "Medium",
+        "gherkin_scenarios": ["Property management scenarios"],
+        "dependencies": ["TASK-PC-004"],
+        "non_functional_requirements": ["Input validation", "Error handling", "Security", "Logging"]
+      },
+      {
+        "id": "TASK-PC-006",
+        "title": "Implement Property Availability Management Endpoint",
+        "description": "Create API endpoint for updating property availability",
+        "effort_estimate": "3h",
+        "priority": "P2",
+        "complexity": "Medium",
+        "gherkin_scenarios": ["Property availability scenarios"],
+        "dependencies": ["TASK-PC-004"],
+        "non_functional_requirements": ["Input validation", "Error handling", "Security", "Logging"]
+      },
+      {
+        "id": "TASK-MC-001",
+        "title": "Implement MatchingCriteria Entity",
+        "description": "Create MatchingCriteria entity for defining match parameters",
+        "effort_estimate": "3h",
+        "priority": "P2",
+        "complexity": "Medium",
+        "gherkin_scenarios": ["Matching scenarios"],
+        "dependencies": [],
+        "non_functional_requirements": ["Data integrity", "Error handling"]
+      },
+      {
+        "id": "TASK-MC-002",
+        "title": "Implement MatchScore Calculation Logic",
+        "description": "Create algorithm for calculating match scores between tenants and properties",
+        "effort_estimate": "4h",
+        "priority": "P2",
+        "complexity": "High",
+        "gherkin_scenarios": ["Matching scenarios"],
+        "dependencies": ["TASK-MC-001"],
+        "non_functional_requirements": ["Performance", "Error handling", "Logging"]
+      },
+      {
+        "id": "TASK-MC-003",
+        "title": "Implement Match Entity",
+        "description": "Create Match entity for storing match results",
+        "effort_estimate": "2h",
+        "priority": "P2",
+        "complexity": "Low",
+        "gherkin_scenarios": ["Matching scenarios"],
+        "dependencies": ["TASK-MC-001", "TASK-MC-002"],
+        "non_functional_requirements": ["Data integrity", "Error handling"]
+      },
+      {
+        "id": "TASK-MC-004",
+        "title": "Implement AI-Powered Matching Algorithm",
+        "description": "Create core matching algorithm with AI components",
+        "effort_estimate": "4h",
+        "priority": "P2",
+        "complexity": "High",
+        "gherkin_scenarios": ["Matching scenarios"],
+        "dependencies": ["TASK-MC-001", "TASK-MC-002", "TASK-MC-003", "TASK-TP-004", "TASK-PC-004"],
+        "non_functional_requirements": ["Performance", "Scalability", "Error handling", "Logging"]
+      },
+      {
+        "id": "TASK-MC-005",
+        "title": "Implement Matching Endpoints",
+        "description": "Create API endpoints for tenant-property matching",
+        "effort_estimate": "4h",
+        "priority": "P2",
+        "complexity": "Medium",
+        "gherkin_scenarios": ["Matching scenarios"],
+        "dependencies": ["TASK-MC-004"],
+        "non_functional_requirements": ["Input validation", "Error handling", "Security", "Logging", "Performance"]
+      },
+      {
+        "id": "TASK-RA-001",
+        "title": "Implement LeaseTerm Value Object",
+        "description": "Create LeaseTerm value object for managing lease dates and conditions",
+        "effort_estimate": "2h",
+        "priority": "P2",
+        "complexity": "Low",
+        "gherkin_scenarios": ["Rental agreement scenarios"],
+        "dependencies": [],
+        "non_functional_requirements": ["Input validation", "Error handling"]
+      },
+      {
+        "id": "TASK-RA-002",
+        "title": "Implement ContractStatus Management",
+        "description": "Create ContractStatus entity for managing agreement states",
+        "effort_estimate": "2h",
+        "priority": "P2",
+        "complexity": "Low",
+        "gherkin_scenarios": ["Rental agreement scenarios"],
+        "dependencies": [],
+        "non_functional_requirements": ["Data integrity", "Error handling"]
+      },
+      {
+        "id": "TASK-RA-003",
+        "title": "Implement RentalAgreement Aggregate",
+        "description": "Create RentalAgreement aggregate root with required invariants",
+        "effort_estimate": "3h",
+        "priority": "P2",
+        "complexity": "Medium",
+        "gherkin_scenarios": ["Rental agreement scenarios"],
+        "dependencies": ["TASK-RA-001", "TASK-RA-002", "TASK-TP-004", "TASK-PC-004"],
+        "non_functional_requirements": ["Data integrity", "Error handling"]
+      },
+      {
+        "id": "TASK-RA-004",
+        "title": "Implement Rental Agreement Endpoints",
+        "description": "Create API endpoints for rental agreement management",
+        "effort_estimate": "4h",
+        "priority": "P2",
+        "complexity": "Medium",
+        "gherkin_scenarios": ["Rental agreement scenarios"],
+        "dependencies": ["TASK-RA-003"],
+        "non_functional_requirements": ["Input validation", "Error handling", "Security", "Logging"]
+      },
+      {
+        "id": "TASK-PC-007",
+        "title": "Implement PaymentMethod Value Object",
+        "description": "Create PaymentMethod value object for managing payment types",
+        "effort_estimate": "2h",
+        "priority": "P3",
+        "complexity": "Low",
+        "gherkin_scenarios": ["Payment scenarios"],
+        "dependencies": [],
+        "non_functional_requirements": ["Input validation", "Error handling", "Security"]
+      },
+      {
+        "id": "TASK-PC-008",
+        "title": "Implement Transaction Entity",
+        "description": "Create Transaction entity for tracking payment transactions",
+        "effort_estimate": "3h",
+        "priority": "P3",
+        "complexity": "Medium",
+        "gherkin_scenarios": ["Payment scenarios"],
+        "dependencies": ["TASK-PC-007"],
+        "non_functional_requirements": ["Data integrity", "Error handling", "Security", "Logging"]
+      },
+      {
+        "id": "TASK-PC-009",
+        "title": "Implement Payment Entity",
+        "description": "Create Payment entity for managing payment details",
+        "effort_estimate": "3h",
+        "priority": "P3",
+        "complexity": "Medium",
+        "gherkin_scenarios": ["Payment scenarios"],
+        "dependencies": ["TASK-PC-007", "TASK-PC-008", "TASK-RA-003"],
+        "non_functional_requirements": ["Data integrity", "Error handling", "Security"]
+      },
+      {
+        "id": "TASK-PC-010",
+        "title": "Implement Payment Processing Endpoints",
+        "description": "Create API endpoints for payment processing",
+        "effort_estimate": "4h",
+        "priority": "P3",
+        "complexity": "High",
+        "gherkin_scenarios": ["Payment scenarios"],
+        "dependencies": ["TASK-PC-009"],
+        "non_functional_requirements": ["Input validation", "Error handling", "Security", "Logging", "Transaction management"]
+      },
+      {
+        "id": "TASK-PC-011",
+        "title": "Implement Transaction History Endpoint",
+        "description": "Create API endpoint for retrieving transaction history",
+        "effort_estimate": "3h",
+        "priority": "P3",
+        "complexity": "Medium",
+        "gherkin_scenarios": ["Payment scenarios"],
+        "dependencies": ["TASK-PC-008", "TASK-PC-009"],
+        "non_functional_requirements": ["Input validation", "Error handling", "Security", "Logging"]
       }
-    },
-    {
-      "task_id": "T002",
-      "task_name": "Implement tenant-specific registration fields",
-      "estimated_hours": 4,
-      "priority": "P0",
-      "complexity": "Medium",
-      "bdd_scenarios": ["Successful tenant registration"],
-      "dependencies": ["T001"],
-      "non_functional_requirements": {
-        "error_handling": "Validate tenant-specific fields and return 400 with specific error messages",
-        "logging": "Log tenant registration field submissions with timestamp",
-        "input_validation": "Validate all tenant-specific fields according to business rules",
-        "security": "Encrypt sensitive tenant data, implement data access controls"
-      }
-    },
-    {
-      "task_id": "T003",
-      "task_name": "Implement required field and email format validation",
-      "estimated_hours": 4,
-      "priority": "P0",
-      "complexity": "Low",
-      "bdd_scenarios": ["Registration with missing required fields"],
-      "dependencies": ["T001"],
-      "non_functional_requirements": {
-        "error_handling": "Return 400 with detailed validation error messages for each missing or invalid field",
-        "logging": "Log validation failures with timestamp and field names",
-        "input_validation": "Implement comprehensive validation for all required fields and email format",
-        "security": "Sanitize all form data to prevent XSS attacks"
-      }
-    },
-    {
-      "task_id": "T004",
-      "task_name": "Implement duplicate email validation",
-      "estimated_hours": 4,
-      "priority": "P0",
-      "complexity": "Medium",
-      "bdd_scenarios": ["Duplicate email registration"],
-      "dependencies": ["T001"],
-      "non_functional_requirements": {
-        "error_handling": "Return 409 Conflict with appropriate error message for duplicate emails",
-        "logging": "Log duplicate email attempts with timestamp and email",
-        "input_validation": "Validate email format before checking for duplicates",
-        "security": "Implement rate limiting to prevent email enumeration attacks"
-      }
-    },
-    {
-      "task_id": "T005",
-      "task_name": "Implement email verification token generation and service",
-      "estimated_hours": 4,
-      "priority": "P1",
-      "complexity": "Medium",
-      "bdd_scenarios": ["Successful tenant registration"],
-      "dependencies": ["T001"],
-      "non_functional_requirements": {
-        "error_handling": "Handle email delivery failures gracefully, provide fallback verification method",
-        "logging": "Log verification token generation and email delivery attempts",
-        "input_validation": "Validate token format before storage and verification",
-        "security": "Generate cryptographically secure tokens with expiration, implement token validation"
-      }
-    },
-    {
-      "task_id": "T006",
-      "task_name": "Implement property owner account creation API endpoint",
-      "estimated_hours": 4,
-      "priority": "P0",
-      "complexity": "Medium",
-      "bdd_scenarios": ["Successful property owner registration"],
-      "dependencies": ["T001"],
-      "non_functional_requirements": {
-        "error_handling": "Validate property owner fields and return 400 with specific error messages",
-        "logging": "Log property owner registration attempts with timestamp",
-        "input_validation": "Validate all property owner-specific fields",
-        "security": "Encrypt sensitive property data, implement secure session management"
-      }
-    },
-    {
-      "task_id": "T007",
-      "task_name": "Implement property owner-specific registration fields",
-      "estimated_hours": 4,
-      "priority": "P0",
-      "complexity": "Medium",
-      "bdd_scenarios": ["Successful property owner registration"],
-      "dependencies": ["T006"],
-      "non_functional_requirements": {
-        "error_handling": "Validate property-specific fields and return 400 with specific error messages",
-        "logging": "Log property field submissions with timestamp",
-        "input_validation": "Validate property-specific fields according to business rules",
-        "security": "Implement field-level encryption for sensitive property data"
-      }
-    },
-    {
-      "task_id": "T008",
-      "task_name": "Implement location validation API and geocoding service integration",
-      "estimated_hours": 4,
-      "priority": "P1",
-      "complexity": "Medium",
-      "bdd_scenarios": ["Property details with invalid location"],
-      "dependencies": ["T007"],
-      "non_functional_requirements": {
-        "error_handling": "Handle geocoding service failures gracefully, provide manual location entry option",
-        "logging": "Log location validation attempts and service responses",
-        "input_validation": "Validate location format before geocoding",
-        "security": "Securely store location data, implement location data privacy controls"
-      }
-    },
-    {
-      "task_id": "T009",
-      "task_name": "Implement tenant profile creation API and data model",
-      "estimated_hours": 4,
-      "priority": "P0",
-      "complexity": "Medium",
-      "bdd_scenarios": ["Successful tenant registration"],
-      "dependencies": ["T002"],
-      "non_functional_requirements": {
-        "error_handling": "Validate profile data and return 400 with specific error messages",
-        "logging": "Log profile creation attempts with timestamp",
-        "input_validation": "Validate all profile fields according to business rules",
-        "security": "Encrypt sensitive profile data, implement access controls for profile data"
-      }
-    },
-    {
-      "task_id": "T010",
-      "task_name": "Implement basic matching algorithm",
-      "estimated_hours": 4,
-      "priority": "P0",
-      "complexity": "High",
-      "bdd_scenarios": ["Tenant profile matching with property requirements"],
-      "dependencies": ["T009", "T029"],
-      "non_functional_requirements": {
-        "error_handling": "Handle matching algorithm failures gracefully, provide fallback matching",
-        "logging": "Log matching algorithm execution and performance metrics",
-        "input_validation": "Validate all input parameters for matching algorithm",
-        "security": "Protect matching algorithm from manipulation, secure matching criteria data"
-      }
-    },
-    {
-      "task_id": "T011",
-      "task_name": "Implement match score calculation",
-      "estimated_hours": 4,
-      "priority": "P0",
-      "complexity": "High",
-      "bdd_scenarios": ["Match score calculation"],
-      "dependencies": ["T010"],
-      "non_functional_requirements": {
-        "error_handling": "Handle score calculation failures, provide default scores when calculation fails",
-        "logging": "Log score calculation attempts and results",
-        "input_validation": "Validate score calculation parameters",
-        "security": "Protect score calculation from manipulation, secure compatibility factors"
-      }
-    },
-    {
-      "task_id": "T012",
-      "task_name": "Implement no matches found handling",
-      "estimated_hours": 4,
-      "priority": "P1",
-      "complexity": "Low",
-      "bdd_scenarios": ["No matching tenant profiles"],
-      "dependencies": ["T010"],
-      "non_functional_requirements": {
-        "error_handling": "Gracefully handle no matches scenario without system errors",
-        "logging": "Log no matches scenarios with search criteria",
-        "input_validation": "Validate search criteria before determining no matches",
-        "security": "Prevent information disclosure about tenant population through error messages"
-      }
-    },
-    {
-      "task_id": "T013",
-      "task_name": "Implement basic search functionality",
-      "estimated_hours": 4,
-      "priority": "P0",
-      "complexity": "Medium",
-      "bdd_scenarios": ["Tenant profile search with filters"],
-      "dependencies": ["T009"],
-      "non_functional_requirements": {
-        "error_handling": "Handle search failures gracefully, provide empty result set when search fails",
-        "logging": "Log search queries and response times",
-        "input_validation": "Validate all search parameters",
-        "security": "Implement pagination to prevent data scraping, sanitize search queries"
-      }
-    },
-    {
-      "task_id": "T014",
-      "task_name": "Implement advanced filter functionality",
-      "estimated_hours": 4,
-      "priority": "P0",
-      "complexity": "Medium",
-      "bdd_scenarios": ["Tenant profile search with filters"],
-      "dependencies": ["T013"],
-      "non_functional_requirements": {
-        "error_handling": "Handle filter application errors gracefully",
-        "logging": "Log filter usage and filter combinations",
-        "input_validation": "Validate all filter parameters",
-        "security": "Prevent SQL injection in filter queries, protect filter data"
-      }
-    },
-    {
-      "task_id": "T015",
-      "task_name": "Implement credit validation middleware",
-      "estimated_hours": 4,
-      "priority": "P0",
-      "complexity": "Medium",
-      "bdd_scenarios": ["Accessing tenant profile without sufficient credits"],
-      "dependencies": ["T035"],
-      "non_functional_requirements": {
-        "error_handling": "Handle credit validation failures gracefully",
-        "logging": "Log credit validation attempts and outcomes",
-        "input_validation": "Validate credit amount format before validation",
-        "security": "Protect against credit manipulation, secure credit data"
-      }
-    },
-    {
-      "task_id": "T016",
-      "task_name": "Implement profile access control",
-      "estimated_hours": 4,
-      "priority": "P0",
-      "complexity": "Medium",
-      "bdd_scenarios": ["Accessing tenant profile without sufficient credits"],
-      "dependencies": ["T015"],
-      "non_functional_requirements": {
-        "error_handling": "Handle access denials gracefully with appropriate error messages",
-        "logging": "Log profile access attempts with timestamps and user IDs",
-        "input_validation": "Validate access request parameters",
-        "security": "Implement proper authentication and authorization, protect profile data"
-      }
-    },
-    {
-      "task_id": "T017",
-      "task_name": "Implement tenant listing creation",
-      "estimated_hours": 4,
-      "priority": "P0",
-      "complexity": "Medium",
-      "bdd_scenarios": ["Supporting functionality for ListingCreated domain event"],
-      "dependencies": ["T009"],
-      "non_functional_requirements": {
-        "error_handling": "Validate listing data and return 400 with specific error messages",
-        "logging": "Log listing creation attempts with timestamps",
-        "input_validation": "Validate all listing fields according to business rules",
-        "security": "Protect listing data, implement access controls for listing management"
-      }
-    },
-    {
-      "task_id": "T018",
-      "task_name": "Implement listing activation and deactivation",
-      "estimated_hours": 4,
-      "priority": "P1",
-      "complexity": "Low",
-      "bdd_scenarios": ["Supporting functionality for ListingActivated/ListingDeactivated domain events"],
-      "dependencies": ["T017"],
-      "non_functional_requirements": {
-        "error_handling": "Handle status change failures gracefully",
-        "logging": "Log status change attempts with timestamps",
-        "input_validation": "Validate status change parameters",
-        "security": "Implement proper authorization for status changes"
-      }
-    },
-    {
-      "task_id": "T019",
-      "task_name": "Implement listing expiration handling",
-      "estimated_hours": 4,
-      "priority": "P1",
-      "complexity": "Low",
-      "bdd_scenarios": ["Supporting functionality for ListingExpired domain event"],
-      "dependencies": ["T017"],
-      "non_functional_requirements": {
-        "error_handling": "Handle expiration process failures gracefully",
-        "logging": "Log expiration events and processing results",
-        "input_validation": "Validate expiration date format",
-        "security": "Protect expiration data, implement secure expiration process"
-      }
-    },
-    {
-      "task_id": "T020",
-      "task_name": "Implement listing renewal functionality",
-      "estimated_hours": 4,
-      "priority": "P1",
-      "complexity": "Low",
-      "bdd_scenarios": ["Supporting functionality for ListingRenewed domain event"],
-      "dependencies": ["T017"],
-      "non_functional_requirements": {
-        "error_handling": "Handle renewal process failures gracefully",
-        "logging": "Log renewal attempts and outcomes",
-        "input_validation": "Validate renewal parameters",
-        "security": "Implement proper payment validation for renewals"
-      }
-    },
-    {
-      "task_id": "T021",
-      "task_name": "Implement tenant profile update",
-      "estimated_hours": 4,
-      "priority": "P1",
-      "complexity": "Medium",
-      "bdd_scenarios": ["Supporting functionality for TenantProfileCompleted domain event"],
-      "dependencies": ["T009"],
-      "non_functional_requirements": {
-        "error_handling": "Validate update data and return 400 with specific error messages",
-        "logging": "Log update attempts with timestamps",
-        "input_validation": "Validate all updated fields according to business rules",
-        "security": "Protect updated profile data, implement proper update authorization"
-      }
-    },
-    {
-      "task_id": "T022",
-      "task_name": "Implement document upload API and validation",
-      "estimated_hours": 4,
-      "priority": "P1",
-      "complexity": "Medium",
-      "bdd_scenarios": ["Supporting functionality for VerificationDocumentSubmitted domain event"],
-      "dependencies": ["T009"],
-      "non_functional_requirements": {
-        "error_handling": "Handle upload failures gracefully, validate document types",
-        "logging": "Log document upload attempts with timestamps",
-        "input_validation": "Validate file type, size, and format",
-        "security": "Scan uploaded files for malware, implement secure file storage"
-      }
-    },
-    {
-      "task_id": "T023",
-      "task_name": "Implement manual and automated verification workflows",
-      "estimated_hours": 4,
-      "priority": "P1",
-      "complexity": "Medium",
-      "bdd_scenarios": ["Supporting functionality for VerificationDocumentApproved/VerificationDocumentRejected domain events"],
-      "dependencies": ["T022"],
-      "non_functional_requirements": {
-        "error_handling": "Handle verification process failures gracefully",
-        "logging": "Log verification attempts and outcomes",
-        "input_validation": "Validate verification parameters",
-        "security": "Implement secure verification process, protect verification data"
-      }
-    },
-    {
-      "task_id": "T024",
-      "task_name": "Implement property registration API and data model",
-      "estimated_hours": 4,
-      "priority": "P0",
-      "complexity": "Medium",
-      "bdd_scenarios": ["Successful property owner registration"],
-      "dependencies": ["T007"],
-      "non_functional_requirements": {
-        "error_handling": "Validate property data and return 400 with specific error messages",
-        "logging": "Log property registration attempts with timestamps",
-        "input_validation": "Validate all property fields according to business rules",
-        "security": "Protect property data, implement access controls for property management"
-      }
-    },
-    {
-      "task_id": "T025",
-      "task_name": "Implement property details update",
-      "estimated_hours": 4,
-      "priority": "P2",
-      "complexity": "Low",
-      "bdd_scenarios": ["Supporting functionality for PropertyDetailsUpdated domain event"],
-      "dependencies": ["T024"],
-      "non_functional_requirements": {
-        "error_handling": "Handle update failures gracefully with appropriate error messages",
-        "logging": "Log update attempts with timestamps",
-        "input_validation": "Validate all updated fields",
-        "security": "Implement proper authorization for updates, protect updated property data"
-      }
-    },
-    {
-      "task_id": "T026",
-      "task_name": "Implement property requirements update",
-      "estimated_hours": 4,
-      "priority": "P1",
-      "complexity": "Low",
-      "bdd_scenarios": ["Supporting functionality for PropertyRequirementsUpdated domain event"],
-      "dependencies": ["T024"],
-      "non_functional_requirements": {
-        "error_handling": "Handle update failures gracefully with appropriate error messages",
-        "logging": "Log update attempts with timestamps",
-        "input_validation": "Validate requirements data format",
-        "security": "Protect requirements data, implement proper update authorization"
-      }
-    },
-    {
-      "task_id": "T027",
-      "task_name": "Implement subscription purchase API and payment gateway integration",
-      "estimated_hours": 4,
-      "priority": "P1",
-      "complexity": "Medium",
-      "bdd_scenarios": ["Accessing tenant profile without sufficient credits"],
-      "dependencies": [],
-      "non_functional_requirements": {
-        "error_handling": "Handle payment failures gracefully, provide clear error messages",
-        "logging": "Log purchase attempts and payment gateway responses",
-        "input_validation": "Validate payment information format",
-        "security": "Comply with PCI DSS requirements, encrypt payment data"
-      }
-    },
-    {
-      "task_id": "T028",
-      "task_name": "Implement subscription activation",
-      "estimated_hours": 4,
-      "priority": "P1",
-      "complexity": "Low",
-      "bdd_scenarios": ["Supporting functionality for SubscriptionActivated domain event"],
-      "dependencies": ["T027"],
-      "non_functional_requirements": {
-        "error_handling": "Handle activation failures gracefully",
-        "logging": "Log activation attempts and outcomes",
-        "input_validation": "Validate activation parameters",
-        "security": "Implement secure activation process, protect subscription data"
-      }
-    },
-    {
-      "task_id": "T029",
-      "task_name": "Implement subscription cancellation",
-      "estimated_hours": 4,
-      "priority": "P2",
-      "complexity": "Low",
-      "bdd_scenarios": ["Supporting functionality for SubscriptionExpired domain event"],
-      "dependencies": ["T028"],
-      "non_functional_requirements": {
-        "error_handling": "Handle cancellation failures gracefully",
-        "logging": "Log cancellation attempts and outcomes",
-        "input_validation": "Validate cancellation parameters",
-        "security": "Implement proper authorization for cancellations"
-      }
-    },
-    {
-      "task_id": "T030",
-      "task_name": "Implement credit purchase API and balance update",
-      "estimated_hours": 4,
-      "priority": "P1",
-      "complexity": "Medium",
-      "bdd_scenarios": ["Accessing tenant profile without sufficient credits"],
-      "dependencies": ["T027"],
-      "non_functional_requirements": {
-        "error_handling": "Handle purchase failures gracefully, provide clear error messages",
-        "logging": "Log purchase attempts and balance updates",
-        "input_validation": "Validate purchase amount format",
-        "security": "Protect credit transaction data, implement secure balance updates"
-      }
-    },
-    {
-      "task_id": "T031",
-      "task_name": "Implement credit consumption",
-      "estimated_hours": 4,
-      "priority": "P1",
-      "complexity": "Medium",
-      "bdd_scenarios": ["Accessing tenant profile without sufficient credits"],
-      "dependencies": ["T030"],
-      "non_functional_requirements": {
-        "error_handling": "Handle consumption failures gracefully, prevent negative balances",
-        "logging": "Log credit consumption with transaction details",
-        "input_validation": "Validate consumption amount",
-        "security": "Implement secure consumption process, prevent race conditions"
-      }
-    },
-    {
-      "task_id": "T032",
-      "task_name": "Implement contact request creation API and notification system",
-      "estimated_hours": 4,
-      "priority": "P1",
-      "complexity": "Medium",
-      "bdd_scenarios": ["Supporting functionality for ContactRequestInitiated domain event"],
-      "dependencies": [],
-      "non_functional_requirements": {
-        "error_handling": "Handle request creation failures gracefully",
-        "logging": "Log contact request attempts and notifications",
-        "input_validation": "Validate contact request data",
-        "security": "Protect contact request data, implement proper request authorization"
-      }
-    },
-    {
-      "task_id": "T033",
-      "task_name": "Implement contact request acceptance/rejection",
-      "estimated_hours": 4,
-      "priority": "P1",
-      "complexity": "Low",
-      "bdd_scenarios": ["Supporting functionality for ContactRequestAccepted/ContactRequestRejected domain events"],
-      "dependencies": ["T032"],
-      "non_functional_requirements": {
-        "error_handling": "Handle response failures gracefully",
-        "logging": "Log response attempts and outcomes",
-        "input_validation": "Validate response parameters",
-        "security": "Implement proper authorization for responses"
-      }
-    },
-    {
-      "task_id": "T034",
-      "task_name": "Implement message creation API and delivery system",
-      "estimated_hours": 4,
-      "priority": "P1",
-      "complexity": "Medium",
-      "bdd_scenarios": ["Supporting functionality for MessageSent domain event"],
-      "dependencies": ["T032"],
-      "non_functional_requirements": {
-        "error_handling": "Handle message creation failures gracefully",
-        "logging": "Log message creation and delivery attempts",
-        "input_validation": "Validate message content format",
-        "security": "Protect message content, implement secure message delivery"
-      }
-    },
-    {
-      "task_id": "T035",
-      "task_name": "Implement message read status",
-      "estimated_hours": 4,
-      "priority": "P2",
-      "complexity": "Low",
-      "bdd_scenarios": ["Supporting functionality for MessageRead domain event"],
-      "dependencies": ["T034"],
-      "non_functional_requirements": {
-        "error_handling": "Handle status update failures gracefully",
-        "logging": "Log status update attempts",
-        "input_validation": "Validate status parameters",
-        "security": "Implement proper authorization for status updates"
-      }
+    ],
+    "dependency_graph": {
+      "TASK-UM-001": [],
+      "TASK-UM-002": [],
+      "TASK-UM-003": ["TASK-UM-001", "TASK-UM-002"],
+      "TASK-UM-004": ["TASK-UM-003"],
+      "TASK-UM-005": ["TASK-UM-003", "TASK-UM-004"],
+      "TASK-UM-006": ["TASK-UM-002", "TASK-UM-004"],
+      "TASK-UM-007": ["TASK-UM-003", "TASK-UM-004"],
+      "TASK-UM-008": ["TASK-UM-007"],
+      "TASK-UM-009": ["TASK-UM-003", "TASK-UM-004"],
+      "TASK-TP-001": [],
+      "TASK-TP-002": [],
+      "TASK-TP-003": ["TASK-TP-002"],
+      "TASK-TP-004": ["TASK-TP-001", "TASK-TP-002", "TASK-TP-003", "TASK-UM-003"],
+      "TASK-TP-005": ["TASK-TP-004"],
+      "TASK-PC-001": [],
+      "TASK-PC-002": [],
+      "TASK-PC-003": [],
+      "TASK-PC-004": ["TASK-PC-001", "TASK-PC-002", "TASK-PC-003", "TASK-UM-003"],
+      "TASK-PC-005": ["TASK-PC-004"],
+      "TASK-PC-006": ["TASK-PC-004"],
+      "TASK-MC-001": [],
+      "TASK-MC-002": ["TASK-MC-001"],
+      "TASK-MC-003": ["TASK-MC-001", "TASK-MC-002"],
+      "TASK-MC-004": ["TASK-MC-001", "TASK-MC-002", "TASK-MC-003", "TASK-TP-004", "TASK-PC-004"],
+      "TASK-MC-005": ["TASK-MC-004"],
+      "TASK-RA-001": [],
+      "TASK-RA-002": [],
+      "TASK-RA-003": ["TASK-RA-001", "TASK-RA-002", "TASK-TP-004", "TASK-PC-004"],
+      "TASK-RA-004": ["TASK-RA-003"],
+      "TASK-PC-007": [],
+      "TASK-PC-008": ["TASK-PC-007"],
+      "TASK-PC-009": ["TASK-PC-007", "TASK-PC-008", "TASK-RA-003"],
+      "TASK-PC-010": ["TASK-PC-009"],
+      "TASK-PC-011": ["TASK-PC-008", "TASK-PC-009"]
     }
-  ]
+  }
 }
-```
-
-[STEP_SCORE: 9/10]

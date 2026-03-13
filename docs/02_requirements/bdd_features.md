@@ -1,248 +1,536 @@
-Feature: Tenant Profile Creation
-As a potential tenant
-I want to create a detailed profile
-So that property owners can evaluate me as a candidate
-
-Scenario: Successful tenant registration
-Given I am a new user on the registration page
-When I submit all required profile information including email, password, and personal details
-Then my tenant profile should be created successfully
-And I should receive a confirmation email with verification link
-
-Scenario: Registration with missing required fields
-Given I am a new user on the registration page
-When I submit registration with missing required fields
-Then I should see validation errors for the missing fields
-And my profile should not be created
-
-Edge Case: Duplicate email registration
-Given a tenant with email "tenant@example.com" exists in the system
-When I try to register with the same email
-Then the system should reject the registration
-And display an appropriate error message
-
-Bounded Context: User Management
-
-Feature: Property Owner Registration
-As a property owner
-I want to register on the platform
-So that I can browse and evaluate potential tenants
-
-Scenario: Successful property owner registration
-Given I am a new user on the property owner registration page
-When I submit all required registration information including property details
-Then my property owner account should be created successfully
-And I should receive a confirmation email
-
-Edge Case: Property details with invalid location
-Given I am inputting property details
-When I enter an invalid location that cannot be verified
-Then the system should request valid location information
-And prevent saving until valid location is provided
-
-Bounded Context: User Management
-
-Feature: AI-Powered Tenant Matching
-As a property owner
-I want to see tenant profiles that match my property requirements
-So that I can efficiently find suitable tenants
-
-Scenario: Tenant profile matching with property requirements
-Given I am a property owner with defined property requirements
-When there are tenant profiles that match my criteria
-Then the system should display matching tenant profiles sorted by match score
-
-Scenario: Match score calculation
-Given a tenant profile and property owner requirements
-When the matching algorithm runs
-Then a match score should be calculated based on compatibility factors
-And the score should be displayed as a percentage
-
-Edge Case: No matching tenant profiles
-Given I am a property owner with very specific requirements
-When no tenant profiles match my criteria
-Then the system should display a "No matches found" message
-And suggest relaxing my search criteria
-
-Bounded Context: Matching System
-
-Feature: Tenant Profile Browsing
-As a property owner
-I want to search and filter tenant profiles
-So that I can efficiently find tenants that meet my specific criteria
-
-Scenario: Tenant profile search with filters
-Given I am a property owner on the tenant search page
-When I apply filters for budget, move-in date, and tenant preferences
-Then the system should display tenant profiles matching all selected filters
-
-Edge Case: Accessing tenant profile without sufficient credits
-Given I am a property owner with no viewing credits left
-When I try to view a tenant profile
-Then the system should prompt me to purchase credits or upgrade my subscription
-And prevent profile viewing until payment is completed
-
-Bounded Context: Matching System
-
-Feature: Tenant Profile Listing Creation
-As a tenant
-I want to create a listing of my profile
-So that property owners can discover and evaluate me
-
-Scenario: Listing creation with duration selection
-Given I am a tenant with a complete profile
-When I create a new listing
-Then I should be able to select duration (30, 60, or 90 days)
-And my listing should become active immediately
-
-Scenario: First listing free for tenants
-Given I am a new tenant creating my first listing
-When I complete the listing creation process
-Then the system should apply the "first listing free" promotion
-And no payment should be required
-
-Edge Case: Creating multiple simultaneous listings
-Given I already have an active listing
-When I try to create another listing
-Then the system should inform me that only one listing can be active at a time
-And suggest updating the existing listing instead
-
-Bounded Context: Listing Management
-
-Feature: Listing Duration Management
-As a tenant
-I want to manage the duration of my listing
-So that I can control how long my profile is visible to property owners
-
-Scenario: Listing expiration handling
-Given I have an active tenant listing
-When my listing reaches its expiration date
-Then the listing should be automatically deactivated
-And I should receive a notification about the expiration
-
-Scenario: Listing renewal before expiration
-Given I have an active tenant listing nearing expiration
-When I choose to renew the listing
-Then the system should extend the listing duration
-And process any required payment
-
-Edge Case: Attempting to renew after expiration
-Given my tenant listing has already expired
-When I try to renew the listing
-Then the system should create a new listing instead of renewing
-And I may need to pay if I've already used my free listing
-
-Bounded Context: Listing Management
-
-Feature: Subscription Management
-As a property owner
-I want to manage my subscription plan
-So that I can access tenant profiles according to my chosen plan
-
-Scenario: Subscription plan selection
-Given I am a newly registered property owner
-When I navigate to the subscription page
-Then I should see available subscription plans with their features and prices
-And I should be able to select and purchase a plan
-
-Scenario: Subscription upgrade
-Given I have an active basic subscription
-When I choose to upgrade to a premium plan
-Then the system should prorate the upgrade cost
-And my account should immediately have access to premium features
-
-Edge Case: Payment failure during subscription
-Given I am attempting to purchase a subscription
-When my payment fails
-Then the system should display a clear error message
-And allow me to try an alternative payment method
-
-Bounded Context: Payment System
-
-Feature: Payment Processing
-As a property owner
-I want to pay for viewing tenant profiles
-So that I can contact potential tenants
-
-Scenario: One-time profile view payment
-Given I am a property owner without a subscription
-When I choose to view a tenant profile
-Then the system should prompt me to pay for the view
-And upon successful payment, the profile should be displayed
-
-Edge Case: Refund request for unused views
-Given I have purchased multiple profile views
-When I request a refund for unused views
-Then the system should calculate the refund amount based on unused views
-And process the refund according to the refund policy
-
-Bounded Context: Payment System
-
-Feature: Contact Initiation
-As a property owner
-I want to initiate contact with a tenant
-So that I can discuss potential rental arrangements
-
-Scenario: Contact request to tenant
-Given I am a property owner viewing a tenant profile
-When I click the "Contact" button
-Then the system should send a contact request to the tenant
-And I should be notified when the tenant responds
-
-Scenario: Contact acceptance/rejection
-Given I am a tenant who received a contact request
-When I view the request and choose to accept or reject
-Then the property owner should be notified of my decision
-And if accepted, we can begin exchanging messages
-
-Edge Case: Contact request to inactive tenant
-Given I am a property owner trying to contact a tenant
-When the tenant's listing has expired
-Then the system should prevent the contact request
-And inform me that the tenant is no longer actively seeking housing
-
-Bounded Context: Communication
-
-Feature: Message Exchange
-As a user (tenant or property owner)
-I want to exchange messages with another user
-So that we can discuss rental details
-
-Scenario: Message exchange
-Given I have an accepted contact request with another user
-When I send a message
-Then the recipient should receive a notification
-And the message should appear in our conversation thread
-
-Edge Case: Inappropriate message content
-Given I am exchanging messages with another user
-When I send a message with inappropriate content
-Then the system should flag the message for moderation
-And potentially suspend the conversation pending review
-
-Bounded Context: Communication
-
-Feature: Identity Verification
-As a tenant
-I want to verify my identity
-So that property owners can trust my profile information
-
-Scenario: Identity verification process
-Given I am a tenant with a profile
-When I navigate to the verification section and upload required documents
-Then the system should process my verification request
-And notify me when verification is complete
-
-Scenario: Verification status tracking
-Given I have submitted documents for verification
-When I check my profile
-Then I should see my current verification status
-And understand if additional information is needed
-
-Edge Case: Verification document rejection
-Given I have submitted documents for verification
-When my documents are rejected due to insufficient quality
-Then the system should notify me of the rejection
-And allow me to submit new documents
-
-Bounded Context: Verification
+{
+  "bounded_contexts": [
+    {
+      "name": "User Management",
+      "features": [
+        {
+          "name": "User Registration",
+          "scenarios": [
+            {
+              "title": "Successful tenant registration",
+              "given": "a new tenant with valid information",
+              "when": "the tenant submits registration details",
+              "then": "the system creates a tenant account"
+            },
+            {
+              "title": "Successful property owner registration",
+              "given": "a new property owner with valid information",
+              "when": "the property owner submits registration details",
+              "then": "the system creates a property owner account"
+            },
+            {
+              "title": "Registration with duplicate email",
+              "given": "a user registers with an existing email",
+              "when": "the user submits registration details",
+              "then": "the system shows email already in use error"
+            },
+            {
+              "title": "Registration with invalid email format",
+              "given": "a user registers with invalid email format",
+              "when": "the user submits registration details",
+              "then": "the system shows invalid email format error"
+            },
+            {
+              "title": "Registration with weak password",
+              "given": "a user registers with password not meeting security requirements",
+              "when": "the user submits registration details",
+              "then": "the system shows password security requirements error"
+            }
+          ]
+        },
+        {
+          "name": "User Authentication",
+          "scenarios": [
+            {
+              "title": "Successful user login",
+              "given": "a registered user with valid credentials",
+              "when": "the user submits login credentials",
+              "then": "the system authenticates the user and redirects to dashboard"
+            },
+            {
+              "title": "Login with incorrect password",
+              "given": "a registered user with incorrect password",
+              "when": "the user submits login credentials",
+              "then": "the system shows invalid credentials error"
+            },
+            {
+              "title": "Login with non-existent account",
+              "given": "a user with non-existent account",
+              "when": "the user submits login credentials",
+              "then": "the system shows account not found error"
+            },
+            {
+              "title": "Password reset request",
+              "given": "a user who has forgotten their password",
+              "when": "the user requests password reset",
+              "then": "the system sends password reset link to registered email"
+            },
+            {
+              "title": "Account deletion",
+              "given": "a user who wants to delete their account",
+              "when": "the user requests account deletion",
+              "then": "the system removes the user account after confirmation"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Tenant Profile Context",
+      "features": [
+        {
+          "name": "Profile Management",
+          "scenarios": [
+            {
+              "title": "Create tenant profile",
+              "given": "a registered tenant without a profile",
+              "when": "the tenant submits profile details",
+              "then": "the system creates a tenant profile"
+            },
+            {
+              "title": "Update tenant profile",
+              "given": "a tenant with an existing profile",
+              "when": "the tenant updates profile information",
+              "then": "the system saves the updated profile information"
+            },
+            {
+              "title": "Create profile with missing required fields",
+              "given": "a tenant submitting incomplete profile information",
+              "when": "the tenant submits profile details",
+              "then": "the system shows missing required fields error"
+            },
+            {
+              "title": "Profile with inappropriate content",
+              "given": "a tenant submits profile with inappropriate content",
+              "when": "the system processes the profile",
+              "then": "the system rejects the profile and shows content policy violation"
+            },
+            {
+              "title": "Exceed profile field character limits",
+              "given": "a tenant submits profile information exceeding character limits",
+              "when": "the tenant submits profile details",
+              "then": "the system shows character limit exceeded error"
+            }
+          ]
+        },
+        {
+          "name": "Profile Verification",
+          "scenarios": [
+            {
+              "title": "Request identity verification",
+              "given": "a tenant with a complete profile",
+              "when": "the tenant requests identity verification",
+              "then": "the system initiates verification process"
+            },
+            {
+              "title": "Submit verification documents",
+              "given": "a tenant in the verification process",
+              "when": "the tenant submits verification documents",
+              "then": "the system processes the documents for verification"
+            },
+            {
+              "title": "Submit invalid verification documents",
+              "given": "a tenant submits invalid verification documents",
+              "when": "the system processes the documents",
+              "then": "the system rejects the documents and requests valid ones"
+            },
+            {
+              "title": "Verification approval",
+              "given": "a tenant with valid verification documents",
+              "when": "the verification is approved",
+              "then": "the system adds verification badge to the profile"
+            },
+            {
+              "title": "Verification rejection",
+              "given": "a tenant with invalid verification documents",
+              "when": "the verification is rejected",
+              "then": "the system notifies the tenant of rejection with reasons"
+            }
+          ]
+        },
+        {
+          "name": "Profile Visibility",
+          "scenarios": [
+            {
+              "title": "Set profile visibility preferences",
+              "given": "a tenant with an existing profile",
+              "when": "the tenant sets visibility preferences",
+              "then": "the system saves the visibility preferences"
+            },
+            {
+              "title": "Upgrade to featured profile",
+              "given": "a tenant with a standard profile",
+              "when": "the tenant purchases featured profile upgrade",
+              "then": "the system applies featured profile status after payment"
+            },
+            {
+              "title": "Featured profile without payment",
+              "given": "a tenant attempting to upgrade to featured without payment",
+              "when": "the tenant submits upgrade request",
+              "then": "the system shows payment required error"
+            },
+            {
+              "title": "Property owner views tenant profiles",
+              "given": "a property owner with valid subscription",
+              "when": "the property owner searches for tenant profiles",
+              "then": "the system displays tenant profiles matching search criteria"
+            },
+            {
+              "title": "View profiles without subscription",
+              "given": "a property owner without valid subscription",
+              "when": "the property owner attempts to view tenant profiles",
+              "then": "the system shows subscription required error"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Matching Context",
+      "features": [
+        {
+          "name": "AI Matching Algorithm",
+          "scenarios": [
+            {
+              "title": "Generate compatibility matches",
+              "given": "property owners and tenants with compatible preferences",
+              "when": "the matching algorithm runs",
+              "then": "the system generates compatibility matches between property owners and tenants"
+            },
+            {
+              "title": "Display match scores",
+              "given": "compatibility matches have been generated",
+              "when": "a property owner views potential tenant matches",
+              "then": "the system displays match scores for each potential tenant"
+            },
+            {
+              "title": "No matches due to insufficient criteria",
+              "given": "property owner with overly restrictive criteria",
+              "when": "the matching algorithm runs",
+              "then": "the system shows no matches found message"
+            },
+            {
+              "title": "Inaccurate match scoring",
+              "given": "matching algorithm produces inconsistent scores",
+              "when": "the system detects scoring anomalies",
+              "then": "the system recalculates scores and alerts administrators"
+            },
+            {
+              "title": "Matches become unavailable",
+              "given": "saved tenant matches with expired listings",
+              "when": "a property owner views saved matches",
+              "then": "the system indicates which matches are no longer available"
+            }
+          ]
+        },
+        {
+          "name": "Search and Filter",
+          "scenarios": [
+            {
+              "title": "Property owner searches tenants",
+              "given": "a property owner with valid subscription",
+              "when": "the property owner applies search criteria",
+              "then": "the system returns tenant profiles matching the criteria"
+            },
+            {
+              "title": "Search with restrictive criteria",
+              "given": "a property owner applying overly restrictive search criteria",
+              "when": "the property owner submits search",
+              "then": "the system shows no results message with suggestions to broaden search"
+            },
+            {
+              "title": "Save search criteria",
+              "given": "a property owner with frequently used search criteria",
+              "when": "the property owner saves search criteria",
+              "then": "the system saves the criteria for future use"
+            },
+            {
+              "title": "Filter by verification status",
+              "given": "a property owner who wants only verified tenants",
+              "when": "the property owner applies verification filter",
+              "then": "the system shows only tenant profiles with verification status"
+            },
+            {
+              "title": "Invalid search parameters",
+              "given": "a property owner submits invalid search parameters",
+              "when": "the system processes the search",
+              "then": "the system shows invalid parameters error with correction suggestions"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Privacy Context",
+      "features": [
+        {
+          "name": "Property Owner Privacy",
+          "scenarios": [
+            {
+              "title": "Anonymous browsing of tenant profiles",
+              "given": "a property owner browsing tenant profiles",
+              "when": "the property owner views a tenant profile",
+              "then": "the system does not reveal the property owner's identity to the tenant"
+            },
+            {
+              "title": "Property details remain hidden",
+              "given": "a tenant viewing the platform",
+              "when": "the tenant searches for properties",
+              "then": "the system does not display property details as properties are not listed"
+            },
+            {
+              "title": "Control contact information sharing",
+              "given": "a property owner interested in a tenant",
+              "when": "the property owner decides to share contact information",
+              "then": "the system shares contact information only after mutual interest is established"
+            },
+            {
+              "title": "Unauthorized access attempt",
+              "given": "a malicious user attempting to access private property information",
+              "when": "the unauthorized access attempt is detected",
+              "then": "the system blocks the attempt and logs the security event"
+            },
+            {
+              "title": "Privacy settings application",
+              "given": "a property owner with configured privacy settings",
+              "when": "the property owner's profile is accessed",
+              "then": "the system applies all configured privacy settings correctly"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Listing Context",
+      "features": [
+        {
+          "name": "Listing Management",
+          "scenarios": [
+            {
+              "title": "Create listing with duration",
+              "given": "a tenant creating a listing",
+              "when": "the tenant selects listing duration (30/60/90 days)",
+              "then": "the system creates the listing with the specified duration"
+            },
+            {
+              "title": "Listing expiration",
+              "given": "a listing with approaching expiration date",
+              "when": "the expiration date is reached",
+              "then": "the system marks the listing as expired"
+            },
+            {
+              "title": "Expiration notification",
+              "given": "a listing nearing expiration",
+              "when": "the notification threshold is reached",
+              "then": "the system sends expiration alert to the tenant"
+            },
+            {
+              "title": "Listing renewal",
+              "given": "a tenant with expiring listing",
+              "when": "the tenant requests renewal before expiration",
+              "then": "the system extends the listing duration after payment"
+            },
+            {
+              "title": "Attempt to create listing beyond maximum duration",
+              "given": "a tenant attempting to create listing exceeding 90 days",
+              "when": "the tenant submits the listing",
+              "then": "the system shows maximum duration exceeded error"
+            },
+            {
+              "title": "Expired listing removal",
+              "given": "listings that have expired",
+              "when": "the system processes expired listings",
+              "then": "the system removes expired listings from search results"
+            },
+            {
+              "title": "Renewal payment failure",
+              "given": "a tenant with payment processing failure",
+              "when": "the renewal payment fails",
+              "then": "the system shows payment failure error and provides retry options"
+            },
+            {
+              "title": "Attempt to renew expired listing",
+              "given": "a tenant attempting to renew an already expired listing",
+              "when": "the tenant submits renewal request",
+              "then": "the system shows listing expired error and requires new listing creation"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Communication Context",
+      "features": [
+        {
+          "name": "Secure Messaging",
+          "scenarios": [
+            {
+              "title": "Send contact request",
+              "given": "a property owner interested in a tenant",
+              "when": "the property owner sends a contact request",
+              "then": "the system delivers the contact request to the tenant"
+            },
+            {
+              "title": "Accept contact request",
+              "given": "a tenant with received contact request",
+              "when": "the tenant accepts the contact request",
+              "then": "the system enables messaging between the tenant and property owner"
+            },
+            {
+              "title": "Decline contact request",
+              "given": "a tenant with received contact request",
+              "when": "the tenant declines the contact request",
+              "then": "the system notifies the property owner of the decline"
+            },
+            {
+              "title": "Exchange secure messages",
+              "given": "a tenant and property owner with established contact",
+              "when": "either party sends a message",
+              "then": "the system delivers the message securely to the recipient"
+            },
+            {
+              "title": "Inappropriate message report",
+              "given": "a user receives inappropriate message",
+              "when": "the user reports the message",
+              "then": "the system flags the message for moderation and temporarily restricts the sender"
+            },
+            {
+              "title": "Communication before mutual interest",
+              "given": "a user attempting to contact another without mutual interest",
+              "when": "the user sends a message",
+              "then": "the system blocks the message and shows mutual interest required error"
+            },
+            {
+              "title": "Message history access",
+              "given": "users with established communication",
+              "when": "either party accesses message history",
+              "then": "the system displays the complete message history between the parties"
+            },
+            {
+              "title": "Message with contact information sharing",
+              "given": "a user attempting to share external contact information",
+              "when": "the system detects contact information in message",
+              "then": "the system flags the message with privacy warning"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Monetization Context",
+      "features": [
+        {
+          "name": "Subscription Management",
+          "scenarios": [
+            {
+              "title": "Property owner purchases subscription",
+              "given": "a property owner without active subscription",
+              "when": "the property owner purchases 30-day access",
+              "then": "the system grants 30-day access to tenant profiles after payment"
+            },
+            {
+              "title": "Tenant pays for subsequent listing",
+              "given": "a tenant creating listing after first free listing",
+              "when": "the tenant completes payment",
+              "then": "the system creates the paid listing for the specified duration"
+            },
+            {
+              "title": "First listing free",
+              "given": "a new tenant creating first listing",
+              "when": "the tenant submits the listing",
+              "then": "the system creates the listing without payment requirement"
+            },
+            {
+              "title": "Payment processing failure",
+              "given": "a user with payment processing failure",
+              "when": "the payment fails to process",
+              "then": "the system shows payment failure error with retry options"
+            },
+            {
+              "title": "Access premium features without payment",
+              "given": "a user attempting to access premium features without payment",
+              "when": "the user attempts to access the feature",
+              "then": "the system shows payment required error"
+            },
+            {
+              "title": "Subscription renewal failure",
+              "given": "a property owner with expired payment method",
+              "when": "the system attempts to renew subscription",
+              "then": "the system shows renewal failure error and requests updated payment information"
+            },
+            {
+              "title": "Refund request",
+              "given": "a user requesting refund for unsatisfactory service",
+              "when": "the user submits refund request",
+              "then": "the system initiates refund process according to refund policy"
+            },
+            {
+              "title": "Upgrade to premium verification",
+              "given": "a tenant with standard verification",
+              "when": "the tenant purchases premium verification service",
+              "then": "the system upgrades verification status after payment"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Notification Context",
+      "features": [
+        {
+          "name": "Notification Management",
+          "scenarios": [
+            {
+              "title": "New match notification",
+              "given": "new tenant matches for a property owner",
+              "when": "the matching system identifies new matches",
+              "then": "the system sends new match notification to the property owner"
+            },
+            {
+              "title": "Profile view notification",
+              "given": "a tenant profile viewed by property owner",
+              "when": "the profile view occurs",
+              "then": "the system sends profile view notification to the tenant"
+            },
+            {
+              "title": "Listing expiration alert",
+              "given": "a tenant listing approaching expiration",
+              "when": "the expiration threshold is reached",
+              "then": "the system sends listing expiration alert to the tenant"
+            },
+            {
+              "title": "New message notification",
+              "given": "a user receives a new message",
+              "when": "the message is delivered",
+              "then": "the system sends new message notification to the recipient"
+            },
+            {
+              "title": "Notification preference management",
+              "given": "a user wanting to manage notification preferences",
+              "when": "the user updates notification settings",
+              "then": "the system saves and applies the new notification preferences"
+            },
+            {
+              "title": "Critical notification delivery failure",
+              "given": "a critical notification failing to deliver",
+              "when": "the delivery failure is detected",
+              "then": "the system logs the failure and attempts alternative delivery methods"
+            },
+            {
+              "title": "Excessive notifications",
+              "given": "a user receiving too many notifications",
+              "when": "the system detects notification frequency threshold exceeded",
+              "then": "the system groups notifications and suggests preference adjustment"
+            },
+            {
+              "title": "Notification with sensitive information",
+              "given": "a system preparing to send notification",
+              "when": "the notification contains sensitive information",
+              "then": "the system redacts sensitive information before sending"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
